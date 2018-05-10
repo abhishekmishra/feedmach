@@ -40,7 +40,22 @@ def load_feeds():
     return feeds
 
 
+def is_feed_subscribed(url):
+    conn = get_conn()
+    c = conn.cursor()
+    res = c.execute('SELECT * from FEED WHERE url = ?', (url, ))
+    found = False
+    for row in res:
+        if row['URL'] == url:
+            found = True
+            break
+    close_conn(conn)
+    return found
+
+
 def subscribe_feed(name, url):
+    if is_feed_subscribed(url):
+        return
     conn = get_conn()
     c = conn.cursor()
     res = c.execute('INSERT INTO FEED(name, url, added_date) values (?, ?, ?)',
@@ -62,10 +77,12 @@ if __name__ == "__main__":
     for f in fs:
         print(f)
     subscribe_feed('testfeed', 'testurl')
+    print('feed testurl is subscribed: {}'.format(is_feed_subscribed('testurl')))
     fs = load_feeds()
     for f in fs:
         print(f)
     unsubscribe_feed_by_url('testurl')
+    print('feed testurl is subscribed: {}'.format(is_feed_subscribed('testurl')))
     fs = load_feeds()
     for f in fs:
         print(f)
