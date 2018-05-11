@@ -7,6 +7,7 @@ A simple feed UI
 
 import wx
 import wx.html as html
+import wx.dataview as dataview
 import feedparser
 import db.feed
 import ui.opml_import_dialog
@@ -37,7 +38,7 @@ class RSSMonkFrame(wx.Frame):
 
         self.feeds = db.feed.load_feeds()
         self.feed_names = []
-        for f in self.feeds:
+        for f in self.feeds.values():
             self.feed_names.append(f.name)
 
         self.list = None
@@ -57,8 +58,17 @@ class RSSMonkFrame(wx.Frame):
         vbox = wx.BoxSizer(wx.VERTICAL)
 
         hbox2 = wx.BoxSizer(wx.HORIZONTAL)
-        topics_list_box = wx.ListBox(panel, -1, choices=self.feed_names)
-        hbox2.Add(topics_list_box, 1, flag=wx.EXPAND | wx.ALL, border=8)
+        # topics_list_box = wx.ListBox(panel, -1, choices=self.feed_names)
+        # hbox2.Add(topics_list_box, 1, flag=wx.EXPAND | wx.ALL, border=8)
+
+        feed_list = dataview.TreeListCtrl(panel)
+        cat_column = feed_list.AppendColumn('Feed')
+        feed_list.AppendColumn('Items')
+        uncat_item = feed_list.AppendItem(feed_list.GetRootItem(), 'Uncategorized')
+        for f in self.feed_names:
+            feed_list.AppendItem(uncat_item, f)
+        hbox2.Add(feed_list, 1, flag=wx.EXPAND | wx.ALL, border=8)
+        feed_list.Expand(uncat_item)
 
         feedpaneVBox = wx.BoxSizer(wx.VERTICAL)
 
@@ -66,7 +76,9 @@ class RSSMonkFrame(wx.Frame):
         self.list.InsertColumn(0, 'title', width=400)
         #self.list.InsertColumn(1, 'description', width=300)
         self.list.InsertColumn(1, 'date', wx.LIST_FORMAT_RIGHT, 50)
-        f = feedparser.parse(self.feeds[0].url)
+        for x in self.feeds.values():
+            f = feedparser.parse(x.url)
+            break
         for i in f.entries:
             index = self.list.InsertItem(0, i.title)
             #self.list.SetItem(index, 1, i.description)
@@ -125,7 +137,7 @@ class RSSMonkFrame(wx.Frame):
 
 def main():
     app = wx.App()
-    ex = RSSMonkFrame(title='RSSMonk')
+    ex = RSSMonkFrame(title='RSS Monk')
     ex.Show()
     app.MainLoop()
 

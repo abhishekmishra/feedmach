@@ -25,17 +25,23 @@ class Feed:
 
 
 def load_feeds():
-    feeds = []
+    feeds = {}
     conn = get_conn()
     c = conn.cursor()
-    c.execute('SELECT * FROM FEED')
+    c.execute('''
+        SELECT f.*, cf.*, c.NAME CATEGORY_NAME FROM FEED f
+        LEFT OUTER JOIN CATEGORY_FEED cf
+        ON f.ID = cf.FEED_ID
+        LEFT OUTER JOIN CATEGORY c
+        ON c.ID = cf.CATEGORY_ID
+    ''')
     while True:
         row = c.fetchone()
         if not row:
             break
         print(row)
         f = Feed(row['ID'], row['NAME'], row['URL'], row['ADDED_DATE'])
-        feeds.append(f)
+        feeds[row['URL']] = f
     close_conn(conn)
     return feeds
 
@@ -79,7 +85,7 @@ if __name__ == "__main__":
     subscribe_feed('testfeed', 'testurl')
     print('feed testurl is subscribed: {}'.format(is_feed_subscribed('testurl')))
     fs = load_feeds()
-    for f in fs:
+    for f in fs.values():
         print(f)
     unsubscribe_feed_by_url('testurl')
     print('feed testurl is subscribed: {}'.format(is_feed_subscribed('testurl')))
