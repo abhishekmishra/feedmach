@@ -2,7 +2,7 @@ import os
 import sqlite3
 
 
-RSSMONK_DB = os.path.join(os.environ['HOME'], ".rssmonk/rssmonk.db")
+RSSNAJA_DB = os.path.join(os.environ['HOME'], ".rssnaja/rssnaja.db")
 
 
 def dict_factory(cursor, row):
@@ -13,7 +13,7 @@ def dict_factory(cursor, row):
 
 
 def get_conn():
-    conn = sqlite3.connect(RSSMONK_DB)
+    conn = sqlite3.connect(RSSNAJA_DB)
     conn.row_factory = dict_factory
     return conn
 

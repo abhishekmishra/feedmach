@@ -24,7 +24,7 @@ class AutoWidthListCtrl(wx.ListCtrl, ListCtrlAutoWidthMixin):
         ListCtrlAutoWidthMixin.__init__(self)
 
 
-class RSSMonkFrame(wx.Frame):
+class RSSNajaFrame(wx.Frame):
     """
     The top level window for the application.
     It will have a menubar, a toolbar, a statusbar and the main content
@@ -32,9 +32,9 @@ class RSSMonkFrame(wx.Frame):
     """
 
     def __init__(self, title):
-        super(RSSMonkFrame, self).__init__(None,
-                                             title=title,
-                                             size=(1024, 768))
+        super(RSSNajaFrame, self).__init__(None,
+                                           title=title,
+                                           size=(1024, 768))
 
         self.feeds = db.feed.load_feeds()
         self.feed_names = []
@@ -137,7 +137,7 @@ class RSSMonkFrame(wx.Frame):
 
 def main():
     app = wx.App()
-    ex = RSSMonkFrame(title='RSS Monk')
+    ex = RSSNajaFrame(title='RSS Naja')
     ex.Show()
     app.MainLoop()
 

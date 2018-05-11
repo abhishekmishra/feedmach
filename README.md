@@ -1,2 +1,2 @@
-# rssmonk
+# rssnaja
 Minimalist RSS Reader

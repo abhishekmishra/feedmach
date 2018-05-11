@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-# copied from rssmonkdb-schema.sql
+# copied from rssjanadb-schema.sql
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS FEED (
     ID INTEGER NOT NULL PRIMARY KEY,
@@ -71,5 +71,5 @@ def main(db):
 
 
 if __name__ == "__main__":
-    rssmonkdb = os.path.join(os.environ['HOME'], ".rssmonk/rssmonk.db")
-    main(rssmonkdb)
+    rssnajadb = os.path.join(os.environ['HOME'], ".rssnaja/rssnaja.db")
+    main(rssnajadb)
