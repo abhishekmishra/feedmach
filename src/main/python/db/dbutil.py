@@ -2,7 +2,7 @@ import os
 import sqlite3
 
 
-MURKH_DB = os.path.join(os.environ['HOME'], ".murkh/murkh.db")
+FEEDMACH_DB = os.path.join(os.environ['HOME'], ".feedmach/feedmach.db")
 
 
 def dict_factory(cursor, row):
@@ -13,7 +13,7 @@ def dict_factory(cursor, row):
 
 
 def get_conn():
-    conn = sqlite3.connect(MURKH_DB)
+    conn = sqlite3.connect(FEEDMACH_DB)
     conn.row_factory = dict_factory
     return conn
 

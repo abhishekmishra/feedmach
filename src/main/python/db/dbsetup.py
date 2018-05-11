@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-# copied from murkh-schema.sql
+# copied from feedmach-schema.sql
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS FEED (
     ID INTEGER NOT NULL PRIMARY KEY,
@@ -71,5 +71,5 @@ def main(db):
 
 
 if __name__ == "__main__":
-    murkhdb = os.path.join(os.environ['HOME'], ".murkh/murkh.db")
-    main(murkhdb)
+    feedmachdb = os.path.join(os.environ['HOME'], ".feedmach/feedmach.db")
+    main(feedmachdb)

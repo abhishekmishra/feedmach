@@ -1,2 +1,2 @@
-# Murkh
+# FeedMach
 Minimalist Feed/News Reader

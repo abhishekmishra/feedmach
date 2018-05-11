@@ -25,7 +25,7 @@ class AutoWidthListCtrl(wx.ListCtrl, ListCtrlAutoWidthMixin):
         ListCtrlAutoWidthMixin.__init__(self)
 
 
-class MurkhFrame(wx.Frame):
+class FeedMachFrame(wx.Frame):
     """
     The top level window for the application.
     It will have a menubar, a toolbar, a statusbar and the main content
@@ -33,7 +33,7 @@ class MurkhFrame(wx.Frame):
     """
 
     def __init__(self, title):
-        super(MurkhFrame, self).__init__(None,
+        super(FeedMachFrame, self).__init__(None,
                                            title=title,
                                            size=(1024, 768))
 
@@ -155,7 +155,7 @@ class MurkhFrame(wx.Frame):
 
 def main():
     app = wx.App()
-    ex = MurkhFrame(title='Murkh')
+    ex = FeedMachFrame(title='FeedMach')
     ex.Show()
     app.MainLoop()
 
