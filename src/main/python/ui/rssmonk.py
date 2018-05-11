@@ -72,7 +72,7 @@ class RSSMonkFrame(wx.Frame):
             #self.list.SetItem(index, 1, i.description)
             self.list.SetItem(index, 1, i.published)
 
-        print(f['feed']['title'])
+        print(f['feed'])
 
         feedpaneVBox.Add(self.list, 1, wx.EXPAND)
 
@@ -131,5 +131,7 @@ def main():
 
 
 if __name__ == "__main__":
-    db.feed.subscribe_feed('News', 'file:///Users/abhishekmishra/tmp/rss_samples/newsrss.xml')
+    #db.feed.unsubscribe_feed_by_url('file:///Users/abhishekmishra/tmp/rss_samples/newsrss.xml')
+    db.feed.unsubscribe_feed_by_url('file:///home/abhishek/DropBox/newsrss.xml')
+    db.feed.subscribe_feed('News', 'file:///home/abhishek/Dropbox/newsrss.xml')
     main()
