@@ -71,5 +71,5 @@ def main(db):
 
 
 if __name__ == "__main__":
-    rssnajadb = os.path.join(os.environ['HOME'], ".rssnaja/rssnaja.db")
-    main(rssnajadb)
+    murkhdb = os.path.join(os.environ['HOME'], ".murkh/murkh.db")
+    main(murkhdb)

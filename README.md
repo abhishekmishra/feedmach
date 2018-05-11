@@ -1,2 +1,2 @@
-# rssnaja
-Minimalist RSS Reader
+# Murkh
+Minimalist Feed/News Reader

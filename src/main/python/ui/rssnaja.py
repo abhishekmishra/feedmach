@@ -24,7 +24,7 @@ class AutoWidthListCtrl(wx.ListCtrl, ListCtrlAutoWidthMixin):
         ListCtrlAutoWidthMixin.__init__(self)
 
 
-class RSSNajaFrame(wx.Frame):
+class MurkhFrame(wx.Frame):
     """
     The top level window for the application.
     It will have a menubar, a toolbar, a statusbar and the main content
@@ -32,7 +32,7 @@ class RSSNajaFrame(wx.Frame):
     """
 
     def __init__(self, title):
-        super(RSSNajaFrame, self).__init__(None,
+        super(MurkhFrame, self).__init__(None,
                                            title=title,
                                            size=(1024, 768))
 
@@ -137,7 +137,7 @@ class RSSNajaFrame(wx.Frame):
 
 def main():
     app = wx.App()
-    ex = RSSNajaFrame(title='RSS Naja')
+    ex = MurkhFrame(title='Murkh')
     ex.Show()
     app.MainLoop()
 

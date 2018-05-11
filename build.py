@@ -1,5 +1,5 @@
 """
-PyBuilder build file for "rssnaja"
+PyBuilder build file for "murkh"
 
 Author: Abhishek Mishra (abhishekmishra3@gmail.com)
 Date: 10/05/2018
@@ -12,11 +12,11 @@ use_plugin('python.core')
 use_plugin('python.install_dependencies')
 use_plugin("python.distutils")
 
-name = 'rssnaja'
+name = 'murkh'
 authors = [Author('Abhishek Mishra', 'abhishekmishra3@gmail.com')]
 license = 'GPL3'
-summary = 'rssnaja: A minimalist rss reader'
-url = 'https://github.com/abhishekmishra/rssnaja'
+summary = 'murkh: A minimalist news/feed reader'
+url = 'https://github.com/abhishekmishra/murkh'
 version = '0.0.1'
 
 default_task = 'publish'
