@@ -9,7 +9,12 @@ import wx
 import wx.html as html
 import feedparser
 import db.feed
+import ui.opml_import_dialog
 from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
+
+
+APP_EXIT = 1
+APP_OPML_IMPORT = 2
 
 
 class AutoWidthListCtrl(wx.ListCtrl, ListCtrlAutoWidthMixin):
@@ -42,6 +47,8 @@ class RSSMonkFrame(wx.Frame):
 
     def init_ui(self):
         panel = wx.Panel(self)
+
+        self.create_menubar()
 
         font = wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FONT)
 
@@ -87,8 +94,33 @@ class RSSMonkFrame(wx.Frame):
         # vbox.Add((-1, 10))
         panel.SetSizer(vbox)
 
+    def create_menubar(self):
+        menubar = wx.MenuBar()
+        fileMenu = wx.Menu()
+        qmi = wx.MenuItem(fileMenu, APP_EXIT, '&Quit\tCtrl+Q')
+        fileMenu.Append(qmi)
+        self.Bind(wx.EVT_MENU, self.OnQuit, id=APP_EXIT)
+        menubar.Append(fileMenu, '&File')
+
+        importMenu = wx.Menu()
+        opml_import = wx.MenuItem(importMenu, APP_OPML_IMPORT, 'Import &OPML')
+        importMenu.Append(opml_import)
+        self.Bind(wx.EVT_MENU, self.import_opml, id=APP_OPML_IMPORT)
+        menubar.Append(importMenu, '&Import')
+
+        self.SetMenuBar(menubar)
+
     def set_state(self):
         self.topics.extend(self.qindex.topics.keys())
+
+    def OnQuit(self, e):
+        self.Close()
+
+    def import_opml(self, e):
+        opml_import_dlg = ui.opml_import_dialog.OPMLImportDialog(None,
+                                                          title='Import OPML')
+        opml_import_dlg.ShowModal()
+        opml_import_dlg.Destroy()
 
 
 def main():
