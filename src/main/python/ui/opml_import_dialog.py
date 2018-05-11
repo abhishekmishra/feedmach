@@ -1,5 +1,7 @@
 import wx
 import db.feed
+import listparser
+
 
 class OPMLImportDialog(wx.Dialog):
 
@@ -32,9 +34,9 @@ class OPMLImportDialog(wx.Dialog):
         hbox1.Add(browseButton, flag=wx.EXPAND | wx.ALIGN_CENTER)
 
         hbox2 = wx.BoxSizer(wx.HORIZONTAL)
-        okButton = wx.Button(pnl, label='Import')
+        importButton = wx.Button(pnl, label='Import')
         closeButton = wx.Button(pnl, label='Cancel')
-        hbox2.Add(okButton)
+        hbox2.Add(importButton)
         hbox2.Add(closeButton, flag=wx.LEFT, border=5)
 
         # vbox.Add(pnl, proportion=1,
@@ -44,7 +46,7 @@ class OPMLImportDialog(wx.Dialog):
 
         pnl.SetSizer(vbox)
 
-        okButton.Bind(wx.EVT_BUTTON, self.OnClose)
+        importButton.Bind(wx.EVT_BUTTON, self.OnImport)
         closeButton.Bind(wx.EVT_BUTTON, self.OnClose)
 
     def open_file(self, e):
@@ -62,8 +64,12 @@ class OPMLImportDialog(wx.Dialog):
         self.opml_file = pathname
         self.filePathCtrl.WriteText(pathname)
 
-    def OnImport(self):
-        pass
+    def OnImport(self, e):
+        opml_result = listparser.parse(self.opml_file)
+        for f in opml_result.feeds:
+            print(f)
+            print("Importing {} -> {}".format(f.title, f.url))
+            db.feed.subscribe_feed(f.title, f.url)
 
     def OnClose(self, e):
         self.Destroy()
