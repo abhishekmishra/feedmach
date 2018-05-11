@@ -16,6 +16,7 @@ from wx.lib.mixins.listctrl import ListCtrlAutoWidthMixin
 
 APP_EXIT = 1
 APP_OPML_IMPORT = 2
+APP_REFRESH = 3
 
 
 class AutoWidthListCtrl(wx.ListCtrl, ListCtrlAutoWidthMixin):
@@ -36,11 +37,9 @@ class MurkhFrame(wx.Frame):
                                            title=title,
                                            size=(1024, 768))
 
-        self.feeds = db.feed.load_feeds()
-        self.feed_names = []
-        for f in self.feeds.values():
-            self.feed_names.append(f.name)
-
+        self.feeds = None
+        self.feed_names = None
+        self.load_data()
         self.list = None
 
         self.init_ui()
@@ -57,25 +56,20 @@ class MurkhFrame(wx.Frame):
 
         vbox = wx.BoxSizer(wx.VERTICAL)
 
-        hbox2 = wx.BoxSizer(wx.HORIZONTAL)
-        # topics_list_box = wx.ListBox(panel, -1, choices=self.feed_names)
-        # hbox2.Add(topics_list_box, 1, flag=wx.EXPAND | wx.ALL, border=8)
+        # hbox2 = wx.BoxSizer(wx.HORIZONTAL)
 
-        feed_list = dataview.TreeListCtrl(panel)
-        cat_column = feed_list.AppendColumn('Feed')
-        feed_list.AppendColumn('Items')
-        uncat_item = feed_list.AppendItem(feed_list.GetRootItem(), 'Uncategorized')
-        for f in self.feed_names:
-            feed_list.AppendItem(uncat_item, f)
-        hbox2.Add(feed_list, 1, flag=wx.EXPAND | wx.ALL, border=8)
-        feed_list.Expand(uncat_item)
+        splitter = wx.SplitterWindow(panel, -1)
 
+        self.feed_list = dataview.TreeListCtrl(splitter, size=(100, 30))
+        # feed_list.AppendColumn('Items')
+        self.fill_feed_list()
+        rightPanel = wx.Panel(splitter)
         feedpaneVBox = wx.BoxSizer(wx.VERTICAL)
 
-        self.list = AutoWidthListCtrl(panel)
+        self.list = AutoWidthListCtrl(rightPanel)
         self.list.InsertColumn(0, 'title', width=400)
         #self.list.InsertColumn(1, 'description', width=300)
-        self.list.InsertColumn(1, 'date', wx.LIST_FORMAT_RIGHT, 50)
+        self.list.InsertColumn(1, 'date', width=50)
         for x in self.feeds.values():
             f = feedparser.parse(x.url)
             break
@@ -88,17 +82,18 @@ class MurkhFrame(wx.Frame):
 
         feedpaneVBox.Add(self.list, 1, wx.EXPAND)
 
-        htmlwin = html.HtmlWindow(panel, -1, style=wx.NO_BORDER)
+        htmlwin = html.HtmlWindow(rightPanel, -1, style=wx.NO_BORDER)
         htmlwin.SetBackgroundColour(wx.RED)
         htmlwin.SetStandardFonts()
         htmlwin.SetPage(f.entries[0].description +
                         "<br><hr> <a href='{}'>Link to article</a>".format(f.entries[0].link))
 
         feedpaneVBox.Add(htmlwin, 1, wx.EXPAND)
+        rightPanel.SetSizer(feedpaneVBox)
+        splitter.SplitVertically(self.feed_list, rightPanel, 250)
+        # hbox2.Add(feedpaneVBox, 1, wx.EXPAND)
 
-        hbox2.Add(feedpaneVBox, 1, wx.EXPAND)
-
-        vbox.Add(hbox2, 1, flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP | wx.BOTTOM, border=10)
+        vbox.Add(splitter, 1, flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP | wx.BOTTOM, border=10)
 
         hbox3 = wx.BoxSizer(wx.HORIZONTAL)
         vbox.Add(hbox3, 1, flag=wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP | wx.BOTTOM, border=10)
@@ -109,6 +104,9 @@ class MurkhFrame(wx.Frame):
     def create_menubar(self):
         menubar = wx.MenuBar()
         fileMenu = wx.Menu()
+        rmi = wx.MenuItem(fileMenu, APP_REFRESH, '&Refresh\tCtrl+R')
+        fileMenu.Append(rmi)
+        self.Bind(wx.EVT_MENU, self.fill_feed_list, id=APP_REFRESH)
         qmi = wx.MenuItem(fileMenu, APP_EXIT, '&Quit\tCtrl+Q')
         fileMenu.Append(qmi)
         self.Bind(wx.EVT_MENU, self.OnQuit, id=APP_EXIT)
@@ -133,6 +131,26 @@ class MurkhFrame(wx.Frame):
                                                           title='Import OPML')
         opml_import_dlg.ShowModal()
         opml_import_dlg.Destroy()
+        if opml_import_dlg.opml_file:
+            self.load_data()
+            self.fill_feed_list()
+
+    def load_data(self):
+        self.feeds = db.feed.load_feeds()
+        self.feed_names = []
+        for f in self.feeds.values():
+            self.feed_names.append(f.name)
+
+    # Refresh is currently impacted by this github issue
+    # https://github.com/wxWidgets/Phoenix/issues/767
+    def fill_feed_list(self, e=None):
+        self.feed_list.ClearColumns()
+        self.feed_list.DeleteAllItems()
+        cat_column = self.feed_list.AppendColumn('Feed')
+        uncat_item = self.feed_list.AppendItem(self.feed_list.GetRootItem(), 'Uncategorized')
+        for f in self.feed_names:
+            self.feed_list.AppendItem(uncat_item, f)
+        self.feed_list.Expand(uncat_item)
 
 
 def main():

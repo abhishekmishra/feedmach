@@ -13,7 +13,6 @@ class OPMLImportDialog(wx.Dialog):
         self.SetTitle("Import Feeds from OPML file.")
         self.opml_file = None
 
-
     def InitUI(self):
 
         pnl = wx.Panel(self)
@@ -69,7 +68,8 @@ class OPMLImportDialog(wx.Dialog):
         for f in opml_result.feeds:
             print(f)
             print("Importing {} -> {}".format(f.title, f.url))
-            db.feed.subscribe_feed(f.title, f.url)
+            db.feed.subscribe_feed(f.title, f.url, f.tags)
+        self.Destroy()
 
     def OnClose(self, e):
         self.Destroy()

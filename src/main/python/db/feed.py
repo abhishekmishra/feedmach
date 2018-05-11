@@ -59,13 +59,59 @@ def is_feed_subscribed(url):
     return found
 
 
-def subscribe_feed(name, url):
+def subscribe_feed(name, url, category=[]):
+    for c in category:
+        print('Adding category {}'.format(c))
+        register_category(c)
+        link_feed_to_category(url, c)
     if is_feed_subscribed(url):
         return
     conn = get_conn()
     c = conn.cursor()
     res = c.execute('INSERT INTO FEED(name, url, added_date) values (?, ?, ?)',
                     (name, url, datetime.now()))
+    conn.commit()
+    close_conn(conn)
+
+
+def is_category_registered(category):
+    conn = get_conn()
+    c = conn.cursor()
+    res = c.execute('SELECT * from CATEGORY WHERE name = ?', (category, ))
+    found = False
+    for row in res:
+        if row['NAME'] == category:
+            found = True
+            break
+    close_conn(conn)
+    print('Found {}?: {}'.format(category, found))
+    return found
+
+
+def register_category(category):
+    if is_category_registered(category):
+        return
+    conn = get_conn()
+    c = conn.cursor()
+    res = c.execute('INSERT INTO CATEGORY(name) values (?)',
+                    (category, ))
+    conn.commit()
+    close_conn(conn)
+
+
+def link_feed_to_category(feed_url, category):
+    conn = get_conn()
+    c = conn.cursor()
+    res = c.execute(
+        '''
+        INSERT OR IGNORE INTO CATEGORY_FEED(CATEGORY_ID, FEED_ID)
+        WITH t1 AS (
+            Select id from FEED where url = ?
+          ), t2 AS (
+            Select id from CATEGORY where name = ?
+          )
+        select t1.id, t2.id from t1,t2
+        ''', (feed_url, category))
     conn.commit()
     close_conn(conn)
 
