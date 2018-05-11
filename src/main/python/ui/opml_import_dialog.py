@@ -1,5 +1,5 @@
 import wx
-
+import db.feed
 
 class OPMLImportDialog(wx.Dialog):
 
@@ -7,7 +7,7 @@ class OPMLImportDialog(wx.Dialog):
         super(OPMLImportDialog, self).__init__(*args, **kw)
 
         self.InitUI()
-        self.SetSize((250, 200))
+        self.SetSize((500, 150))
         self.SetTitle("Import Feeds from OPML file.")
         self.opml_file = None
 
@@ -17,30 +17,32 @@ class OPMLImportDialog(wx.Dialog):
         pnl = wx.Panel(self)
         vbox = wx.BoxSizer(wx.VERTICAL)
 
-        sb = wx.StaticBox(pnl, label='OPML File')
-        sbs = wx.StaticBoxSizer(sb, orient=wx.VERTICAL)
-
         hbox1 = wx.BoxSizer(wx.HORIZONTAL)
-        browseButton = wx.Button(self, label='Browse')
+        st1 = wx.StaticText(pnl, label="OPML File:", size=(75, 25))
+
+        browseButton = wx.Button(pnl, label='Browse')
         browseButton.Bind(wx.EVT_BUTTON, self.open_file)
 
-        hbox1.Add(wx.TextCtrl(pnl), flag=wx.LEFT, border=5)
-        hbox1.Add(browseButton, flag=wx.EXPAND, border=5)
-        sbs.Add(hbox1)
+        self.filePathCtrl = wx.TextCtrl(pnl, size=(300, 25))
 
-        pnl.SetSizer(sbs)
+        hbox1.Add(st1, flag=wx.EXPAND | wx.ALIGN_CENTER | wx.ALIGN_CENTER_VERTICAL)
+        hbox1.AddSpacer(5)
+        hbox1.Add(self.filePathCtrl, flag=wx.EXPAND | wx.ALIGN_CENTER)
+        hbox1.AddSpacer(5)
+        hbox1.Add(browseButton, flag=wx.EXPAND | wx.ALIGN_CENTER)
 
         hbox2 = wx.BoxSizer(wx.HORIZONTAL)
-        okButton = wx.Button(self, label='Ok')
-        closeButton = wx.Button(self, label='Close')
+        okButton = wx.Button(pnl, label='Import')
+        closeButton = wx.Button(pnl, label='Cancel')
         hbox2.Add(okButton)
         hbox2.Add(closeButton, flag=wx.LEFT, border=5)
 
-        vbox.Add(pnl, proportion=1,
-            flag=wx.ALL|wx.EXPAND, border=5)
-        vbox.Add(hbox2, flag=wx.ALIGN_CENTER|wx.TOP|wx.BOTTOM, border=10)
+        # vbox.Add(pnl, proportion=1,
+        #     flag=wx.ALL|wx.EXPAND, border=5)
+        vbox.Add(hbox1, flag=wx.ALIGN_CENTER|wx.ALL, border=20)
+        vbox.Add(hbox2, flag=wx.ALIGN_RIGHT|wx.RIGHT|wx.BOTTOM, border=10)
 
-        self.SetSizer(vbox)
+        pnl.SetSizer(vbox)
 
         okButton.Bind(wx.EVT_BUTTON, self.OnClose)
         closeButton.Bind(wx.EVT_BUTTON, self.OnClose)
@@ -54,15 +56,21 @@ class OPMLImportDialog(wx.Dialog):
 
             # Proceed loading the file chosen by the user
             pathname = fileDialog.GetPath()
-            try:
-                with open(pathname, 'r') as file:
-                    self.choose_opml_file(file)
-            except IOError:
-                wx.LogError("Cannot open file '%s'." % pathname)
+            self.choose_opml_file(pathname)
 
-    def choose_opml_file(self, file):
-        self.opml_file = file
+    def choose_opml_file(self, pathname):
+        self.opml_file = pathname
+        self.filePathCtrl.WriteText(pathname)
+
+    def OnImport(self):
+        pass
 
     def OnClose(self, e):
-
         self.Destroy()
+
+
+# try:
+#     with open(pathname, 'r') as file:
+#         self.choose_opml_file(file)
+# except IOError:
+#     wx.LogError("Cannot open file '%s'." % pathname)

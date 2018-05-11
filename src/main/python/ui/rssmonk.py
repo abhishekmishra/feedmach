@@ -132,6 +132,6 @@ def main():
 
 if __name__ == "__main__":
     #db.feed.unsubscribe_feed_by_url('file:///Users/abhishekmishra/tmp/rss_samples/newsrss.xml')
-    db.feed.unsubscribe_feed_by_url('file:///home/abhishek/DropBox/newsrss.xml')
-    db.feed.subscribe_feed('News', 'file:///home/abhishek/Dropbox/newsrss.xml')
+    #db.feed.unsubscribe_feed_by_url('file:///home/abhishek/DropBox/newsrss.xml')
+    #db.feed.subscribe_feed('News', 'file:///home/abhishek/Dropbox/newsrss.xml')
     main()
