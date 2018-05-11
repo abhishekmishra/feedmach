@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-# copied from rssjanadb-schema.sql
+# copied from murkh-schema.sql
 SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS FEED (
     ID INTEGER NOT NULL PRIMARY KEY,
