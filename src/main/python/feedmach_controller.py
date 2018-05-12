@@ -3,12 +3,24 @@ The controller for the application.
 UI should not interact with models directly.
 """
 import os
+import threading
 import asyncio
 import db.dbsetup
 
 
 DEFAULT_DB_NAME='feedmach.db'
 DEFAULT_CONFIG_FOLDER=os.path.join(os.environ['HOME'], '.feedmach')
+
+
+class FeedMachControllerThread(threading.Thread):
+    def __init__(self):
+        super(FeedMachControllerThread, self).__init__()
+        self.controller = FeedMachController()
+
+    def run(self):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        self.controller.start_loop()
 
 
 class FeedMachController():
@@ -20,7 +32,14 @@ class FeedMachController():
         self.config_folder = config_folder
         self.db_name = db_name
         self.db_path = os.path.join(self.config_folder, self.db_name)
+        self.loop = None
+
+    def start_loop(self):
         self.loop = asyncio.get_event_loop()
+        self.loop.run_forever()
+
+    def stop_loop(self):
+        self.loop.stop()
 
     #TODO: remove
     def generic_callback(self):
@@ -72,6 +91,6 @@ class FeedMachController():
 
 
 if __name__ == "__main__":
-    fmc = FeedMachController()
-    fmc.init_schema()
-    fmc.loop.run_forever()
+    fmct = FeedMachControllerThread()
+    fmct.start()
+    fmct.controller.init_schema()
