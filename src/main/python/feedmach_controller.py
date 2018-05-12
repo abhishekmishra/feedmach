@@ -3,6 +3,8 @@ The controller for the application.
 UI should not interact with models directly.
 """
 import os
+import asyncio
+import db.dbsetup
 
 
 DEFAULT_DB_NAME='feedmach.db'
@@ -18,10 +20,18 @@ class FeedMachController():
         self.config_folder = config_folder
         self.db_name = db_name
         self.db_path = os.path.join(self.config_folder, self.db_name)
+        self.loop = asyncio.get_event_loop()
+
+    #TODO: remove
+    def generic_callback(self):
+        print('done')
 
     # Some Admin Functions
     def init_schema(self):
-        pass
+        self.loop.call_later(10, self.generic_callback)
+
+    def _init_schema(self):
+        db.dbsetup.main(self.db_path)
 
     # Subscription Functions
     def subscribe_feed(self, name, url, categories=[]):
@@ -59,3 +69,9 @@ class FeedMachController():
     # Telemetry functions
     def log_event(self, context, type, message):
         pass
+
+
+if __name__ == "__main__":
+    fmc = FeedMachController()
+    fmc.init_schema()
+    fmc.loop.run_forever()
