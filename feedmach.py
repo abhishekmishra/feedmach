@@ -70,20 +70,23 @@ def main():
 
     # print(posts_list)
 
+    width = 800
     # Define the layout for PySimpleGUI window
     layout = [
         [sg.Table(values=posts_list,
                   headings=headers,
-                  auto_size_columns=False,
                   justification="left",
                   num_rows=min(len(posts_list), 20),
-                  col_widths=[30, 25],
+                  #col_widths=[30, 25],
+                  auto_size_columns=True,
                   display_row_numbers=True,
                   key="-POSTS-",
-                  enable_events=True
+                  enable_events=True,
+                  size=(width, 100)
                 #   alternating_row_color="#f0f0f0"
                   )],
-        [sg.Button("Exit")]
+        [sg.Multiline(size=(20, 5), expand_x=True,key='-POST-')],
+        [sg.Button("Exit")],
     ]
 
     window = sg.Window("FeedMach: RSS Feed Reader", layout)
@@ -95,7 +98,10 @@ def main():
             break
         elif event == '-POSTS-':
             row_index = values['-POSTS-'][0]
-            sg.popup(f'Row {row_index} was clicked')
+            selected_row = posts_data[row_index]
+            print(selected_row['Summary'])
+            window['-POST-'].update(selected_row['Summary'])
+
 
     window.close()
 
