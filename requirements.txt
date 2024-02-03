@@ -1,4 +1,1 @@
 feedparser
-wxpython
-sqlparse
-listparser
