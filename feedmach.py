@@ -102,7 +102,12 @@ def main():
     initial_selection = [0]
     # Define the layout for PySimpleGUI window
     layout = [
-        [[sg.Button("Add Feed", key="-BTN-ADDFEED-")]],
+        [
+            sg.Button("Add Feed", key="-BTN-ADDFEED-"),
+            sg.Button("Refresh"),
+            sg.Button("Refresh All"),
+            sg.Button("Exit"),
+        ],
         [
             [
                 sg.Listbox(
@@ -130,7 +135,6 @@ def main():
             ]
         ],
         [sg.Multiline(size=(20, 5), expand_x=True, key="-POST-")],
-        [sg.Button("Exit")],
     ]
 
     window = sg.Window("FeedMach: RSS Feed Reader", layout, finalize=True)
