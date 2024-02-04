@@ -82,7 +82,7 @@ def get_feed_name(feed_url):
 
 
 def get_posts_list_for_feedurl(feed_url, headers):
-    feed_url = "http://localhost:8000/feeds/all.rss.xml"
+    # feed_url = "http://localhost:8000/feeds/all.rss.xml"
 
     posts_data = get_posts_details(rss=feed_url)["posts"]
 
@@ -101,9 +101,7 @@ def main():
     # the headers to display
     headers = ["Title", "Published"]
 
-    posts_data, posts_list = get_posts_list_for_feedurl(
-        feeds[feed_item_list[0]], headers
-    )
+    posts_data, posts_list = get_posts_list_for_feedurl(feed_item_list[0], headers)
     print(posts_list)
 
     width = 800
