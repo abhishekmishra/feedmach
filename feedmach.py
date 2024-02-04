@@ -58,7 +58,7 @@ def select_values(posts_data, headers):
     return selected_data
 
 def main():
-    feed_url = "https://neolateral.in/feeds/all.rss.xml"
+    feed_url = "http://localhost:8000/feeds/all.rss.xml"
 
     posts_data = get_posts_details(rss=feed_url)["posts"]
 
@@ -82,7 +82,8 @@ def main():
                   display_row_numbers=True,
                   key="-POSTS-",
                   enable_events=True,
-                  size=(width, 100)
+                  size=(width, 500),
+                #   selected_row=1,
                 #   alternating_row_color="#f0f0f0"
                   )],
         [sg.Multiline(size=(20, 5), expand_x=True,key='-POST-')],
