@@ -81,22 +81,30 @@ def get_feed_name(feed_url):
         return None
 
 
-def main():
+def get_posts_list_for_feedurl(feed_url, headers):
     feed_url = "http://localhost:8000/feeds/all.rss.xml"
 
     posts_data = get_posts_details(rss=feed_url)["posts"]
 
+    # list of posts values selected (stripped of headers)
+    posts_list = select_values(posts_data, headers)
+    return posts_data, posts_list
+
+
+def main():
+    feeds = feed.load_feeds()
+    print(feeds)
+    feed_item_list = [feed_item for feed_item in feeds]
+    feed_name_list = [feeds[feed_item].name for feed_item in feeds]
+    print(feed_name_list)
+
     # the headers to display
     headers = ["Title", "Published"]
 
-    # list of posts values selected (stripped of headers)
-    posts_list = select_values(posts_data, headers)
-
-    feeds_list = feed.load_feeds()
-    print(feeds_list)
-    feed_name_list = [feeds_list[feed_item].name for feed_item in feeds_list]
-    print(feed_name_list)
-    # print(posts_list)
+    posts_data, posts_list = get_posts_list_for_feedurl(
+        feeds[feed_item_list[0]], headers
+    )
+    print(posts_list)
 
     width = 800
     initial_selection = [0]
@@ -148,13 +156,22 @@ def main():
         if event == sg.WINDOW_CLOSED or event == "Exit":
             break
         elif event == "-POSTS-":
-            row_index = values["-POSTS-"][0]
-            selected_row = posts_data[row_index]
-            # print(selected_row['Summary'])
-            window["-POST-"].update(selected_row["Summary"])
+            if len(values["-POSTS-"]) > 0:
+                row_index = values["-POSTS-"][0]
+                selected_row = posts_data[row_index]
+                # print(selected_row['Summary'])
+                window["-POST-"].update(selected_row["Summary"])
+            else:
+                window["-POST-"].update("")
         elif event == "-FEEDS-":
             selected_item = values["-FEEDS-"][0]  # Get the selected item
             print(f"Selected item: {selected_item}")
+            idx = feed_name_list.index(selected_item)
+            posts_data, posts_list = get_posts_list_for_feedurl(
+                feed_item_list[idx], headers
+            )
+            print(posts_list)
+            window["-POSTS-"].update(values=posts_list)
 
         elif event == "-BTN-ADDFEED-":
             print("add a new feed")
