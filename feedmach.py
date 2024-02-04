@@ -71,6 +71,7 @@ def main():
     # print(posts_list)
 
     width = 800
+    initial_selection=[0]
     # Define the layout for PySimpleGUI window
     layout = [
         [sg.Table(values=posts_list,
@@ -83,14 +84,18 @@ def main():
                   key="-POSTS-",
                   enable_events=True,
                   size=(width, 500),
-                #   selected_row=1,
+                  select_mode=sg.TABLE_SELECT_MODE_BROWSE,
+                #   select_rows=initial_selection,
                 #   alternating_row_color="#f0f0f0"
                   )],
         [sg.Multiline(size=(20, 5), expand_x=True,key='-POST-')],
         [sg.Button("Exit")],
     ]
 
-    window = sg.Window("FeedMach: RSS Feed Reader", layout)
+    window = sg.Window("FeedMach: RSS Feed Reader", layout, finalize=True)
+
+    #select the first row of the table
+    window['-POSTS-'].update(select_rows=initial_selection)
 
     while True:
         event, values = window.read()
@@ -100,7 +105,7 @@ def main():
         elif event == '-POSTS-':
             row_index = values['-POSTS-'][0]
             selected_row = posts_data[row_index]
-            print(selected_row['Summary'])
+            # print(selected_row['Summary'])
             window['-POST-'].update(selected_row['Summary'])
 
 
