@@ -2,12 +2,12 @@
   "name": "feedmach",
   "version": "0.1.0",
   "description": "feed download and manage",
-  "main": "index.js",
+  "main": "index.mjs",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "node index.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Abhishek Mishra",
