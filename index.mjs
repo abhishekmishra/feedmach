@@ -11,6 +11,7 @@ import { createWriteStream, readFileSync } from 'fs';
 import { join, basename } from 'path';
 import { Command } from 'commander';
 import * as htmlparser2 from 'htmlparser2';
+import chalk from 'chalk';
 
 // the download folder
 // TODO: this should be loaded from config/environment
@@ -24,7 +25,7 @@ function downloadFeed(url)
     const file = createWriteStream(filePath);
     const request = get(url, function(response) {
         response.pipe(file);
-        console.log('downloaded ' + filePath);
+        console.log(chalk.hex('#FFA500')('downloaded ' + filePath));
     });
     return filePath;
 }
@@ -44,11 +45,11 @@ program.command('add')
   .argument('<string>', 'the feed url')
   .action((url, options) => {
     const limit = options.first ? 1 : undefined;
-    console.log(`are you trying to add the feed "${url}"?`);
+    console.log(chalk.red.bgBlue.bold(`are you trying to add the feed "${url}"?`));
     let feedFile = downloadFeed(url);
     let feedContents = readFileSync(feedFile, 'utf8');
     let parseContent = htmlparser2.parseFeed(feedContents);
-    console.log(`feed name is ${parseContent.title}`);
+    console.log(chalk.black.bgGreen(`feed name is ${parseContent.title}`));
   });
 
 program.parse();
