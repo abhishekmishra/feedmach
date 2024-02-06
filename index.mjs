@@ -18,16 +18,15 @@ import chalk from 'chalk';
 const downloadFolder = '.work';
 
 // download the feed at the given url
-function downloadFeed(url)
-{
-    let fileName = basename(url);
-    let filePath = join(downloadFolder, fileName);
-    const file = createWriteStream(filePath);
-    const request = get(url, function(response) {
-        response.pipe(file);
-        console.log(chalk.hex('#FFA500')('downloaded ' + filePath));
-    });
-    return filePath;
+function downloadFeed(url) {
+  let fileName = basename(url);
+  let filePath = join(downloadFolder, fileName);
+  const file = createWriteStream(filePath);
+  const request = get(url, function (response) {
+    response.pipe(file);
+    console.log(chalk.hex('#FFA500')('downloaded ' + filePath));
+  });
+  return filePath;
 }
 
 // create the program object
@@ -35,10 +34,10 @@ const program = new Command();
 
 // configure the cli program name and options
 program
-    .name('feedmach')
-    .description(`feedmach is a CLI to download, extract, organize and read` +
-        `RSS/ATOM feeds.`)
-    .version('0.1.0');
+  .name('feedmach')
+  .description(`feedmach is a CLI to download, extract, organize and read` +
+    `RSS/ATOM feeds.`)
+  .version('0.1.0');
 
 program.command('add')
   .description('Subscribe to a new feed.')
