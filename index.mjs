@@ -10,6 +10,7 @@
 import { createWriteStream, readFileSync, writeFileSync } from 'fs';
 import { join, basename } from 'path';
 import { Command } from 'commander';
+import * as uuid from 'uuid';
 import * as htmlparser2 from 'htmlparser2';
 import chalk from 'chalk';
 
@@ -17,27 +18,43 @@ import chalk from 'chalk';
 // TODO: this should be loaded from config/environment
 const downloadFolder = '.work';
 
-// download the feed at the given url
-function downloadFeed(url) {
-  let fileName = basename(url);
-  let filePath = join(downloadFolder, fileName);
-  const file = createWriteStream(filePath);
+class RSSFeed 
+{
+    feedUrl;
+    filePath;
+    
+    constructor(feedUrl)
+    {
+        this.feedUrl = feedUrl;
+        this.downloadFeed();
+    }
 
-  fetch(url)
-  .then(response => response.text())
-  .then(data => {
-    // console.log(data);
-    writeFileSync(filePath, data);
-    console.log(chalk.hex('#FFA500')('downloaded ' + filePath));
-    let feedContents = readFileSync(filePath, 'utf8');
-    // console.log(feedContents);
-    let parseContent = htmlparser2.parseFeed(feedContents);
-    console.log(chalk.black.bgGreen(`feed name is ${parseContent.title}`));
-  })
-  .catch(error => console.error('Error:', error));
+    // download the feed at the given url
+    downloadFeed() {
+        let fileName = uuid.v4() + '-' + basename(this.feedUrl);
+        this.filePath = join(downloadFolder, fileName);
+        const file = createWriteStream(this.filePath);
 
-  return filePath;
+        fetch(this.feedUrl)
+        .then(response => response.text())
+        .then(data => {
+            // console.log(data);
+            writeFileSync(this.filePath, data);
+            console.log(chalk.hex('#FFA500')('downloaded ' + this.filePath));
+            let feedContents = readFileSync(this.filePath, 'utf8');
+            // console.log(feedContents);
+            let parseContent = htmlparser2.parseFeed(feedContents);
+            for(let i = 0; i < parseContent.items.length; i++)
+            {
+                console.log(parseContent.items[i].title);
+            }
+            console.log(chalk.black.bgGreen(`feed name is ${parseContent.title}`));
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
 }
+
 
 // create the program object
 const program = new Command();
@@ -55,7 +72,7 @@ program.command('add')
   .action((url, options) => {
     const limit = options.first ? 1 : undefined;
     console.log(chalk.red.bgBlue.bold(`are you trying to add the feed "${url}"?`));
-    let feedFile = downloadFeed(url);
+    new RSSFeed(url);
   });
 
 program.command('list')
