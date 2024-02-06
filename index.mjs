@@ -51,6 +51,15 @@ program.command('add')
     console.log(chalk.black.bgGreen(`feed name is ${parseContent.title}`));
   });
 
+program.command('list')
+  .description('List feeds.')
+  .option('-u, --unread', 'only feeds with unread article(s)')
+  .action((options)  => {
+    console.log(options.unread);
+    const list_all = !options.unread;
+    console.log(`listing all = ${list_all}`);
+  });
+
 program.parse();
 
 // downloadFeed('http://localhost:8000/feeds/all.rss.xml');
