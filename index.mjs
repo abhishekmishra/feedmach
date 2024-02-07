@@ -7,7 +7,7 @@
  * feedmach is a CLI to download, extract and organize rss feeds.
  */
 // import { get } from 'http';
-import { createWriteStream, readFileSync, writeFileSync } from 'fs';
+import { createWriteStream, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join, basename } from 'path';
 import { Command } from 'commander';
 import * as uuid from 'uuid';
@@ -22,6 +22,9 @@ class RSSFeed
 {
     feedUrl;
     filePath;
+    feedTitle;
+    feedDescription;
+    feedDate;
     
     constructor(feedUrl)
     {
@@ -44,9 +47,17 @@ class RSSFeed
             let feedContents = readFileSync(this.filePath, 'utf8');
             // console.log(feedContents);
             let parseContent = htmlparser2.parseFeed(feedContents);
+            let feedTitle = parseContent.title;
+            let itemFolder = feedTitle.replace(/[/\\?%*:|"'<>\s]/g, '_');
+            mkdirSync(join(downloadFolder, itemFolder), {recursive:true});
             for(let i = 0; i < parseContent.items.length; i++)
             {
-                console.log(parseContent.items[i].title);
+                let itemTitle = parseContent.items[i].title;
+                let filename = itemTitle;
+                filename = filename.replace(/[/\\?%*:|"'<>\s]/g, '_');
+                filename = join(downloadFolder, itemFolder, filename + '.json');
+                console.log(itemTitle, filename);
+                writeFileSync(filename, JSON.stringify(parseContent.items[i]));
             }
             console.log(chalk.black.bgGreen(`feed name is ${parseContent.title}`));
         })
