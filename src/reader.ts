@@ -1,5 +1,5 @@
-import { NuButton, NuColumnPanel, NuRowPanel, NuTop } from 'ne0ui';
-import { NuSizeHint, NuSingleLineText } from 'ne0ui';
+import { NuButton, NuColumnPanel, NuRowPanel, NuTop , NuSizeHint, NuSingleLineText } from 'ne0ui';
+
 // import { PlainTextEditorView } from './editor_view';
 
 interface ButtonConfig {
