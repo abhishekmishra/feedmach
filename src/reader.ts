@@ -23,14 +23,20 @@ export class ReaderApp extends NuTop {
     rightPanelMinWidth = 300;
     rightPanelMaxWidth = 500;
 
+    // data
+    private _feeds: any[] = [];
+
     constructor() {
         super();
+
+        this._feeds = ["feed1", "feed2", "feed3"];
 
         this.createToolbar();
 
         this.createContentRow();
 
         this.createStatusbar();
+
     }
 
     createContentRow() {
@@ -65,6 +71,11 @@ export class ReaderApp extends NuTop {
         this.contentRow.addComp(this.leftPanel);
         this.contentRow.addComp(this.centerPanel);
         this.contentRow.addComp(this.rightPanel);
+
+        for (const feed in this._feeds) {
+            const feedButton = new NuButton(buttonConfig('bi bi-rss', feed));
+            this.leftPanel.addComp(feedButton);
+        }
     }
 
     createToolbar() {
