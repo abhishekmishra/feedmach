@@ -1,6 +1,9 @@
-import { NuButton, NuColumnPanel, NuRowPanel, NuTop , NuSizeHint, NuSingleLineText } from 'ne0ui';
+import { NuButton, NuColumnPanel, NuRowPanel, NuTop , NuSizeHint, NuSingleLineText, NuFont } from 'ne0ui';
 
 // import { PlainTextEditorView } from './editor_view';
+
+const toolbarButtonFont = new NuFont('Roboto,', 'normal', 1, 'em', 700);
+
 
 interface ButtonConfig {
     w: number;
@@ -8,6 +11,7 @@ interface ButtonConfig {
     margin: string;
     icon: string;
     text: string;
+    font: NuFont;
 }
 
 export class ReaderApp extends NuTop {
@@ -82,20 +86,21 @@ export class ReaderApp extends NuTop {
         // create a row panel
         this.toolbarPanel = new NuRowPanel({
             w: new NuSizeHint(120, 120, Infinity),
-            h: 27,
+            h: 36,
             margin: '2px',
         });
 
         this.add(this.toolbarPanel);
 
-        const newButton = new NuButton(buttonConfig('bi bi-file-earmark', 'New'));
-        this.toolbarPanel.addComp(newButton);
-        const openButton = new NuButton(buttonConfig('bi bi-folder2-open', 'Open'));
-        this.toolbarPanel.addComp(openButton);
-        const saveButton = new NuButton(buttonConfig('bi bi-file-arrow-down', 'Save'));
-        this.toolbarPanel.addComp(saveButton);
-        const saveAsButton = new NuButton(buttonConfig('bi bi-file-arrow-down', 'Save As'));
-        this.toolbarPanel.addComp(saveAsButton);
+        const addFeedButton = this.createToolbarButton('file-earmark', 'Add Feed');
+        this.toolbarPanel.addComp(addFeedButton);
+    
+        const refreshFeedButton = this.createToolbarButton('arrow-clockwise', 'Refresh Feed');
+        this.toolbarPanel.addComp(refreshFeedButton);
+        const refreshAllButton = this.createToolbarButton('arrow-clockwise', 'Refresh All');
+        this.toolbarPanel.addComp(refreshAllButton);
+        const preferencesButton = this.createToolbarButton('gear', 'Preferences');
+        this.toolbarPanel.addComp(preferencesButton);
     }
 
     createStatusbar() {
@@ -115,14 +120,23 @@ export class ReaderApp extends NuTop {
 
         this.add(this.statusbarPanel);
     }
+
+    createToolbarButton(icon:string, label:string) {
+        const btn = new NuButton(buttonConfig('bi bi-' + icon + ' toolbar-btn-icon', label));
+        btn.setElemStyle('display', 'inline-flex');
+        btn.setElemStyle('justify-content', ' center'); /* center the content horizontally */
+        btn.setElemStyle('align-items', 'center'); /* center the content vertically */
+        return btn;
+    }
 }
 
 function buttonConfig(icon: string, text: string): ButtonConfig {
     return {
-        w: 80,
-        h: 24,
-        margin: '1px',
+        w: 110,
+        h: 30,
+        margin: '0px',
         icon: icon,
         text: text,
+        font: toolbarButtonFont
     };
 }
