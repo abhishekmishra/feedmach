@@ -1,8 +1,9 @@
-import { NuButton, NuColumnPanel, NuRowPanel, NuTop , NuSizeHint, NuSingleLineText, NuFont } from 'ne0ui';
+import { NuButton, NuColumnPanel, NuRowPanel, NuTop, NuSizeHint, NuSingleLineText, NuFont, NuLabel, NuMargin } from 'ne0ui';
 
 // import { PlainTextEditorView } from './editor_view';
 
 const toolbarButtonFont = new NuFont('Roboto,', 'normal', 1, 'em', 700);
+const feedNameTextFont = new NuFont('Roboto,', 'normal', 1.4, 'em', 500);
 
 
 interface ButtonConfig {
@@ -33,7 +34,7 @@ export class ReaderApp extends NuTop {
     constructor() {
         super();
 
-        this._feeds = ["feed1", "feed2", "feed3"];
+        this._feeds = ["dude it is a feed1", "dude it is a feed2", "dude it is a feed3"];
 
         this.createToolbar();
 
@@ -77,8 +78,18 @@ export class ReaderApp extends NuTop {
         this.contentRow.addComp(this.rightPanel);
 
         for (const feed in this._feeds) {
-            const feedButton = new NuButton(buttonConfig('bi bi-rss', feed));
-            this.leftPanel.addComp(feedButton);
+            const feedNameDisplay = new NuSingleLineText({
+                text: this._feeds[feed],
+                w: new NuSizeHint(120, 120, Infinity),
+                h: 32,
+                font: feedNameTextFont,
+                margin: new NuMargin(2, 10, 2, 2),
+            });
+            feedNameDisplay.setElemStyle('display', 'inline-flex');
+            feedNameDisplay.setElemStyle('justify-content', 'right'); /* center the content horizontally */
+            feedNameDisplay.setElemStyle('align-items', 'center'); /* center the content vertically */
+    
+            this.leftPanel.addComp(feedNameDisplay);
         }
     }
 
@@ -94,7 +105,7 @@ export class ReaderApp extends NuTop {
 
         const addFeedButton = this.createToolbarButton('file-earmark', 'Add Feed');
         this.toolbarPanel.addComp(addFeedButton);
-    
+
         const refreshFeedButton = this.createToolbarButton('arrow-clockwise', 'Refresh Feed');
         this.toolbarPanel.addComp(refreshFeedButton);
         const refreshAllButton = this.createToolbarButton('arrow-clockwise', 'Refresh All');
@@ -121,7 +132,7 @@ export class ReaderApp extends NuTop {
         this.add(this.statusbarPanel);
     }
 
-    createToolbarButton(icon:string, label:string) {
+    createToolbarButton(icon: string, label: string) {
         const btn = new NuButton(buttonConfig('bi bi-' + icon + ' toolbar-btn-icon', label));
         btn.setElemStyle('display', 'inline-flex');
         btn.setElemStyle('justify-content', ' center'); /* center the content horizontally */
