@@ -1,4 +1,4 @@
-import { NuButton, NuColumnPanel, NuRowPanel, NuTop, NuSizeHint, NuSingleLineText, NuFont, NuLabel, NuMargin } from 'ne0ui';
+import { NuButton, NuColumnPanel, NuRowPanel, NuTop, NuSizeHint, NuSingleLineText, NuFont, NuLabel, NuMargin, NuWindow, NuDialog } from 'ne0ui';
 
 // import { PlainTextEditorView } from './editor_view';
 
@@ -15,13 +15,26 @@ interface ButtonConfig {
     font: NuFont;
 }
 
-export class ReaderApp extends NuTop {
+export class ReaderTop extends NuTop {
+    window: ReaderApp;
+
+    constructor() {
+        super();
+        this.window = new ReaderApp();
+        this.add(this.window);
+        this.addClass('window');
+    }
+}
+
+export class ReaderApp extends NuColumnPanel {
     toolbarPanel: NuRowPanel;
     statusbarPanel: NuRowPanel;
     contentRow: NuRowPanel;
     leftPanel: NuColumnPanel;
     rightPanel: NuColumnPanel;
     centerPanel: NuColumnPanel;
+
+    newFeedDialog: NuDialog;
 
     leftPanelMinWidth = 300;
     leftPanelMaxWidth = 500;
@@ -32,7 +45,12 @@ export class ReaderApp extends NuTop {
     private _feeds: any[] = [];
 
     constructor() {
-        super();
+        super({
+            w: new NuSizeHint(800, 120, Infinity),
+            h: new NuSizeHint(500, 120, Infinity),
+        });
+
+        this.addClass('window-body');
 
         this._feeds = ["dude it is a feed1", "dude it is a feed2", "dude it is a feed3"];
 
@@ -42,6 +60,7 @@ export class ReaderApp extends NuTop {
 
         this.createStatusbar();
 
+        this.newFeedDialog = new NuDialog();
     }
 
     createContentRow() {
@@ -55,24 +74,30 @@ export class ReaderApp extends NuTop {
             w: new NuSizeHint(this.leftPanelMinWidth, this.leftPanelMinWidth, this.leftPanelMaxWidth),
             h: new NuSizeHint(120, 120, Infinity),
             margin: '2px',
-            bg: 'lightgray'
+            // bg: 'lightgray'
         });
+
+        this.leftPanel.addClass('window');
 
         this.centerPanel = new NuColumnPanel({
             w: new NuSizeHint(120, 120, Infinity),
             h: new NuSizeHint(120, 120, Infinity),
             margin: '2px',
-            bg: 'lightgray'
+            // bg: 'lightgray'
         });
+
+        this.centerPanel.addClass('window');
 
         this.rightPanel = new NuColumnPanel({
             w: new NuSizeHint(this.rightPanelMinWidth, this.rightPanelMinWidth, this.rightPanelMaxWidth),
             h: new NuSizeHint(120, 120, Infinity),
             margin: '2px',
-            bg: 'lightgray'
+            // bg: 'lightgray'
         });
 
-        this.add(this.contentRow);
+        this.rightPanel.addClass('window');
+
+        this.addComp(this.contentRow);
         this.contentRow.addComp(this.leftPanel);
         this.contentRow.addComp(this.centerPanel);
         this.contentRow.addComp(this.rightPanel);
@@ -101,10 +126,14 @@ export class ReaderApp extends NuTop {
             margin: '2px',
         });
 
-        this.add(this.toolbarPanel);
+        this.addComp(this.toolbarPanel);
 
         const addFeedButton = this.createToolbarButton('file-earmark', 'Add Feed');
         this.toolbarPanel.addComp(addFeedButton);
+        addFeedButton.on('click', () => {
+            this.newFeedDialog.dialogElem.showModal(); // show the dialog
+            console.log('btn2 is working');
+        });
 
         const refreshFeedButton = this.createToolbarButton('arrow-clockwise', 'Refresh Feed');
         this.toolbarPanel.addComp(refreshFeedButton);
@@ -127,9 +156,12 @@ export class ReaderApp extends NuTop {
             h: 24,
             text: 'Editor status...'
         });
+        editorServerStatusText.addClass('status-bar-field');
         this.statusbarPanel.addComp(editorServerStatusText, 'end');
 
-        this.add(this.statusbarPanel);
+        this.statusbarPanel.addElemClass('status-bar');
+
+        this.addComp(this.statusbarPanel);
     }
 
     createToolbarButton(icon: string, label: string) {

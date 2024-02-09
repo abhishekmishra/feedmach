@@ -26,6 +26,6 @@
  * ```
  */
 
-import { ReaderApp } from "./reader";
+import { ReaderTop } from "./reader";
 
-const readerApp = new ReaderApp();
+const readerTop = new ReaderTop();
