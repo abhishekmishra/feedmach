@@ -1,10 +1,8 @@
-import { NuButton, NuColumnPanel, NuRowPanel, NuTop, NuSizeHint, NuSingleLineText, NuFont, NuLabel, NuMargin, NuWindow, NuDialog } from 'ne0ui';
+import { NuButton, NuColumnPanel, NuRowPanel, NuTop, NuSizeHint, NuSingleLineText, NuFont, NuLabel, NuMargin, NuWindow, NuDialog, NuTreeView, NuTreeItem } from 'ne0ui';
 
 // import { PlainTextEditorView } from './editor_view';
 
-const toolbarButtonFont = new NuFont('Roboto,', 'normal', 1, 'em', 700);
-const feedNameTextFont = new NuFont('Roboto,', 'normal', 1.4, 'em', 500);
-
+const toolbarButtonFont = new NuFont('Times New Roman,', 'normal', 12, 'px');
 
 interface ButtonConfig {
     w: number;
@@ -13,17 +11,6 @@ interface ButtonConfig {
     icon: string;
     text: string;
     font: NuFont;
-}
-
-export class ReaderTop extends NuTop {
-    window: ReaderApp;
-
-    constructor() {
-        super();
-        this.window = new ReaderApp();
-        this.add(this.window);
-        this.addClass('window');
-    }
 }
 
 export class ReaderApp extends NuColumnPanel {
@@ -61,6 +48,12 @@ export class ReaderApp extends NuColumnPanel {
         this.createStatusbar();
 
         this.newFeedDialog = new NuDialog();
+        this.newFeedDialog.getTop().add(new NuButton({
+            w: 1,
+            h: 10,
+            text: 'Close',
+            icon: 'bi bi-x-lg',
+        }));
     }
 
     createContentRow() {
@@ -102,19 +95,25 @@ export class ReaderApp extends NuColumnPanel {
         this.contentRow.addComp(this.centerPanel);
         this.contentRow.addComp(this.rightPanel);
 
+        const feedsView = new NuTreeView({
+            w: new NuSizeHint(120, 120, Infinity),
+            h: new NuSizeHint(120, 120, Infinity),
+        });
+        this.leftPanel.addComp(feedsView);
+
         for (const feed in this._feeds) {
-            const feedNameDisplay = new NuSingleLineText({
+            const feedNameDisplay = new NuTreeItem({
                 text: this._feeds[feed],
-                w: new NuSizeHint(120, 120, Infinity),
-                h: 32,
-                font: feedNameTextFont,
-                margin: new NuMargin(2, 10, 2, 2),
+                // w: new NuSizeHint(120, 120, Infinity),
+                // h: 32,
+                // font: feedNameTextFont,
+                // margin: new NuMargin(2, 10, 2, 2),
             });
-            feedNameDisplay.setElemStyle('display', 'inline-flex');
-            feedNameDisplay.setElemStyle('justify-content', 'right'); /* center the content horizontally */
-            feedNameDisplay.setElemStyle('align-items', 'center'); /* center the content vertically */
+            // feedNameDisplay.setElemStyle('display', 'inline-flex');
+            // feedNameDisplay.setElemStyle('justify-content', 'right'); /* center the content horizontally */
+            // feedNameDisplay.setElemStyle('align-items', 'center'); /* center the content vertically */
     
-            this.leftPanel.addComp(feedNameDisplay);
+            feedsView.addItem(feedNameDisplay);
         }
     }
 
@@ -132,7 +131,6 @@ export class ReaderApp extends NuColumnPanel {
         this.toolbarPanel.addComp(addFeedButton);
         addFeedButton.on('click', () => {
             this.newFeedDialog.dialogElem.showModal(); // show the dialog
-            console.log('btn2 is working');
         });
 
         const refreshFeedButton = this.createToolbarButton('arrow-clockwise', 'Refresh Feed');

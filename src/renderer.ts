@@ -26,6 +26,9 @@
  * ```
  */
 
-import { ReaderTop } from "./reader";
+import { NuTop } from "ne0ui";
+import { ReaderApp } from "./reader";
 
-const readerTop = new ReaderTop();
+const top = new NuTop();
+const readerTop = new ReaderApp();
+top.add(readerTop);
