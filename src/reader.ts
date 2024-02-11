@@ -1,4 +1,4 @@
-import { NuButton, NuColumnPanel, NuRowPanel, NuTop, NuSizeHint, NuSingleLineText, NuFont, NuLabel, NuMargin, NuWindow, NuDialog, NuTreeView, NuTreeItem } from 'ne0ui';
+import { NuButton, NuColumnPanel, NuRowPanel, NuTop, NuSizeHint, NuSingleLineText, NuFont, NuLabel, NuMargin, NuWindow, NuDialog, NuTreeView, NuTreeItem, NuTable } from 'ne0ui';
 
 // import { PlainTextEditorView } from './editor_view';
 
@@ -112,9 +112,23 @@ export class ReaderApp extends NuColumnPanel {
             // feedNameDisplay.setElemStyle('display', 'inline-flex');
             // feedNameDisplay.setElemStyle('justify-content', 'right'); /* center the content horizontally */
             // feedNameDisplay.setElemStyle('align-items', 'center'); /* center the content vertically */
-    
+
             feedsView.addItem(feedNameDisplay);
         }
+
+        // create the table view for feed data
+        const feedDataView = new NuTable({
+            w: new NuSizeHint(120, 120, Infinity),
+            h: new NuSizeHint(0, 0, 0),
+        },
+            [
+                ["Title", "Description", "Date"],
+                ["Some Entry 1", "Entry Description 1", "2021-01-01"],
+                ["Some Entry 2", "Entry Description 2", "2021-01-02"],
+                ["Some Entry 3", "Entry Description 3", "2021-01-03"]
+            ]);
+
+        this.centerPanel.addComp(feedDataView);
     }
 
     createToolbar() {
