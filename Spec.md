@@ -18,6 +18,8 @@
 
 # Introduction
 
+This is the specifications document for a simple GUI RSS feed reader. I've tried a few and most have fallen short of my requirements. The next section talks about the requirements of the application in detail. Then we go into the design of the application. Finally, any design limitations are listed.
+
 # Requirements
 
 # High-Level Design
